@@ -1,0 +1,123 @@
+CREATING TABLE AND IMPORTING DATA IN BULK
+==============BRONZE_LAYER==================
+================================================
+
+create table bronze.crm_cst_info(
+	cst_id int ,
+	cst_key Nvarchar(50),
+	cst_first_name Nvarchar(50),
+	cst_last_name Nvarchar(50),
+	cst_marital_status Nvarchar(50),
+	cst_gender Nvarchar(50),
+	cst_create_date date
+);
+
+CREATE TABLE bronze.crm_Prd_info (
+    prd_id INT,
+    prd_key NVARCHAR(50),
+    prd_name NVARCHAR(50),
+    prd_cost int,
+    prd_line NVARCHAR(50),
+    prd_start_date DATETIME,
+    prd_end_date DATETIME
+);
+
+
+create table bronze.crm_sales_detail(
+	sls_order_num Nvarchar(50),
+	sls_prd_key Nvarchar (50),
+	sls_cst_id int,
+	sls_order_date int,
+	sls_ship_date int,
+	sls_due_date int,
+	sls_Sales int,
+	sls_quantity int,
+	sls_price int
+);
+
+create table bronze.erp_cust(
+	cst_id varchar(50),
+	cst_Bdate date,
+	cst_gender Nvarchar(50),
+);
+ 
+create table bronze.erp_localA101(
+	c_id nvarchar(50),
+	country nvarchar(50)
+);
+
+create table bronze.erp_category(
+	cat_id nvarchar(50),
+	cat nvarchar(50),
+	sub_cat nvarchar(50),
+	maintenance nvarchar(50)
+);
+
+=================================================================
+===============================================================
+LOADING DATA INTO THE TABLES:
+
+
+create or alter procedure bronze.load_bronze as
+begin
+bulk insert Bronze.crm_cst_info 
+from  "D:\SQL\sql-data-warehouse-project\datasets\source_crm\cust_info.csv"
+with(
+firstrow=2,
+fieldterminator=',',
+tablock
+);
+
+
+
+bulk insert Bronze.crm_Prd_info
+from  "D:\SQL\sql-data-warehouse-project\datasets\source_crm\prd_info.csv"
+with(
+firstrow=2,
+fieldterminator=',',
+tablock
+);
+
+
+
+bulk insert Bronze.crm_sales_detail
+from  "D:\SQL\sql-data-warehouse-project\datasets\source_crm\sales_details.csv"
+with(
+firstrow=2,
+fieldterminator=',',
+tablock
+);
+
+
+bulk insert Bronze.erp_category
+from  "D:\SQL\sql-data-warehouse-project\datasets\source_erp\PX_CAT_G1V2.csv"
+with(
+firstrow=2,
+fieldterminator=',',
+tablock
+);
+
+
+bulk insert Bronze.erp_cust
+from  "D:\SQL\sql-data-warehouse-project\datasets\source_erp\CUST_AZ12.csv"
+with(
+firstrow=2,
+fieldterminator=',',
+tablock
+);
+
+
+
+bulk insert Bronze.erp_localA101
+from  "D:\SQL\sql-data-warehouse-project\datasets\source_erp\LOC_A101.csv"
+with(
+firstrow=2,
+fieldterminator=',',
+tablock
+);
+end
+
+=======================================================================
+
+NOTE: create procedure helps to load and excute the function as it is time saving and effecient
+
