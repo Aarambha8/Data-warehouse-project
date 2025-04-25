@@ -1,1 +1,93 @@
+creating Silver layer table
+==========================================================
+==========================================================
+Create table silver.crm_cst_info(
+	cst_id int ,
+	cst_key Nvarchar(50),
+	cst_first_name Nvarchar(50),
+	cst_last_name Nvarchar(50),
+	cst_marital_status Nvarchar(50),
+	cst_gender Nvarchar(50),
+	cst_create_date date,
+	dwh_create_date datetime2 default getdate()
+);
+
+CREATE TABLE silver.crm_Prd_info (
+    prd_id INT,
+    prd_key NVARCHAR(50),
+    prd_name NVARCHAR(50),
+    prd_cost int,
+    prd_line NVARCHAR(50),
+    prd_start_date DATETIME,
+    prd_end_date DATETIME,
+	dwh_create_date datetime2 default getdate()
+);
+
+
+create table silver.crm_sales_detail(
+	sls_order_num Nvarchar(50),
+	sls_prd_key Nvarchar (50),
+	sls_cst_id int,
+	sls_order_date int,
+	sls_ship_date int,
+	sls_due_date int,
+	sls_Sales int,
+	sls_quantity int,
+	sls_price int,
+	dwh_create_date datetime2 default getdate()
+);
+
+create table silver.erp_cust(
+	cst_id varchar(50),
+	cst_Bdate date,
+	cst_gender Nvarchar(50),
+	dwh_create_date datetime2 default getdate()
+);
+ 
+create table silver.erp_localA101(
+	c_id nvarchar(50),
+	country nvarchar(50),
+	dwh_create_date datetime2 default getdate()
+);
+
+create table silver.erp_category(
+	cat_id nvarchar(50),
+	cat nvarchar(50),
+	sub_cat nvarchar(50),
+	maintenance nvarchar(50),
+	dwh_create_date datetime2 default getdate()
+);
+===============================================================================
+==================================================================================
+
+cleaning and inserting the bronze table data into silver table 
+
+===============================================================================
+insert into silver.crm_cst_info(
+	cst_id,
+	cst_key,
+	cst_first_name,
+	cst_last_name,
+	cst_marital_status,
+	cst_gender,
+	cst_create_date
+)
+select
+cst_id,
+cst_key,
+trim(cst_first_name)as cst_first_name ,
+trim(cst_last_name) as cst_last_name ,
+case when upper(cst_marital_status)='M' then 'Married'
+	when upper(cst_marital_status)= 'S'then 'Single'
+	else 'n\a'
+end cst_marital_status,
+case when upper(cst_gender)= 'F' then 'Female'
+	When upper(cst_gender) = 'M' then 'Male'
+	else 'n\a'
+end cst_gender	,
+cst_create_date 
+from bronze.crm_cst_info
+
+select * from silver.crm_cst_info;
+
 
